@@ -1,10 +1,6 @@
-# backend/services/streaming_service.py
-from database.mongo_connection import fs
-from flask import Response, jsonify
+from database.gridfs_storage import get_file
 
 def stream_video(video_id):
-    try:
-        file = fs.get(video_id)
-        return Response(file, content_type='video/mp4')
-    except Exception:
-        return jsonify({'error': 'Video not found'}), 404
+    """Stream video by its ID."""
+    file_data = get_file(video_id)
+    return file_data  # Properly return a response for video streaming
