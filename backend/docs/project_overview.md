@@ -1,6 +1,3 @@
-
-### Updated 6. **docs/project_overview.md**
-```markdown
 # Project Overview
 
 ## Architecture
