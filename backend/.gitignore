@@ -84,8 +84,6 @@ ipython_config.py
 celerybeat-schedule
 
 # dotenv
-.env
-.venv
 env/
 venv/
 ENV/
