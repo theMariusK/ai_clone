@@ -35,5 +35,10 @@ def upload_audio():
 def stream_video_route(video_id):
     return stream_video(video_id)
 
+
+@app.route(f"/{API_VERSION}/test", methods=["GET"])
+def test_route():
+    return jsonify({"message": "Test route is working"}), 200
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
