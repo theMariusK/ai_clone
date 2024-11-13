@@ -8,15 +8,14 @@ backend/
 ├── app.py
 ├── services/
 │ ├── data_processing_service.py
-│ ├── streaming_service.py
-│ └── init.py
+│ └── __init__.py
 ├── api_gateway/
 │ ├── gateway.py
 │ └── config.py
 ├── database/
 │ ├── mongo_connection.py
 │ ├── data_model.py
-│ └── gridfs_storage.py
+│ └── storage.py
 ├── Dockerfile
 ├── docker-compose.yml
 ├── .env
