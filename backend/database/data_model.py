@@ -1,5 +1,3 @@
-from pymongo import MongoClient
-
 class FileMetadataModel:
     def __init__(self, title, description, file_path, content_type):
         self.title = title
