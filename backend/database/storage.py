@@ -20,7 +20,6 @@ def initialize_storage():
 
     print("Folders initialized successfully")
 
-# Function to upload a video file to GridFS
 def store_video(video_file, title, description):
     # Save video to local storage
     filename = secure_filename(video_file.filename)
