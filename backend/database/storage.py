@@ -21,22 +21,22 @@ def initialize_storage():
 
     print("Folders initialized successfully")
 
-def store_video(video_file, title, description):
+def store_video(video_file):
     # Save video to local storage
     filename = secure_filename(video_file.filename)
     video_path = os.path.join(not_processed_folder, filename)
     video_file.save(video_path)
     
     # Store metadata in MongoDB using FileMetadataModel
-    result = store_file_metadata(db, title, description, video_path, video_file.content_type)
+    result = store_file_metadata(db, video_path, video_file.content_type)
     return str(result.inserted_id)
 
 
 
 # Common
 
-def store_file_metadata(db, title, description, file_path, content_type):
-    file_metadata = FileMetadataModel(title, description, file_path, content_type)
+def store_file_metadata(db, file_path, content_type):
+    file_metadata = FileMetadataModel(file_path, content_type)
     result = db.files.insert_one(file_metadata.to_dict())
     return result
 

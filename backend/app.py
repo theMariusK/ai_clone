@@ -13,10 +13,8 @@ def upload_video_route():
     print("upload_video")
     
     video_file = request.files['file']
-    title = request.form.get('title')
-    description = request.form.get('description')
     
-    result = store_video(video_file, title, description)
+    result = store_video(video_file)
 
     return jsonify({"message": "Video uploaded successfully", "video_id": str(result)})
 
