@@ -3,7 +3,7 @@ import os
 from database.connection import db
 from bson.objectid import ObjectId
 from werkzeug.utils import secure_filename
-from data_model import FileMetadataModel
+from database.data_model import FileMetadataModel
 
 not_processed_folder = os.getenv("NOT_PROCESSED_FOLDER")
 video_folder = os.getenv("VIDEO_FOLDER")
