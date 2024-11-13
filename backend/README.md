@@ -43,7 +43,7 @@ Follow these steps to set up and run the backend service:
 docker-compose up --build
 
 3. **Access the application:**:
-The backend API will be accessible at http://localhost:5000.
+The backend API will be accessible at [localhost](http://localhost:5000).
 
 
 ## Usage
