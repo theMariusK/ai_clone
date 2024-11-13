@@ -8,7 +8,7 @@ backend/
 ├── app.py
 ├── services/
 │ ├── data_processing_service.py
-│ └── __init__.py
+│ └── init.py
 ├── api_gateway/
 │ ├── gateway.py
 │ └── config.py
