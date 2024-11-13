@@ -14,9 +14,11 @@ services:
     depends_on:
       - mongo
       - data_processing_service
-      - streaming_service
     networks:
       - app-network
+    environment:
+      - FLASK_ENV=development
+      - FLASK_DEBUG=1
 
   mongo:
     image: mongo:latest
@@ -27,6 +29,8 @@ services:
       - mongo-data:/data/db
     networks:
       - app-network
+    env_file:
+      - .env
 
   data_processing_service:
     build:
@@ -38,17 +42,8 @@ services:
       - "5001:5000"
     networks:
       - app-network
-
-  streaming_service:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    depends_on:
-      - mongo
-    ports:
-      - "5002:5000"
-    networks:
-      - app-network
+    env_file:
+      - .env
   
 
 volumes:

@@ -14,5 +14,7 @@ COPY . .
 # Expose the Flask app's port
 EXPOSE 5000
 
+ENV PYTHONUNBUFFERED=1
+
 # Run the application
 CMD ["python", "app.py"]
