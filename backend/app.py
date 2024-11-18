@@ -49,11 +49,14 @@ def process_video_route():
     # Delete the non-processed file
     delete_file(non_processed_result);
     
+    # Process the video and audio
     video_processed_result = process_video(video)
     audio_processed_result = process_audio(audio)
     
-    # Do something with the processed video and audio files
+    # Store the results of processing
+    # Fill the code here
     
+    # Delete the video and audio files
     delete_file(video_result)
     delete_file(audio_result)
 
