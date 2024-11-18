@@ -1,47 +1,38 @@
-# some_other_module.py
 import os
 from database.connection import db
 from bson.objectid import ObjectId
-from werkzeug.utils import secure_filename
 from database.data_model import FileMetadataModel
 
-not_processed_folder = os.getenv("NOT_PROCESSED_FOLDER")
-video_folder = os.getenv("VIDEO_FOLDER")
-audio_folder = os.getenv("AUDIO_FOLDER")
 
-def _initialize_folder(path):
-    if not os.path.exists(path):
-        os.makedirs(path)
-
-def initialize_storage():
-    _initialize_folder(os.getenv("UPLOAD_FOLDER"))
-    _initialize_folder(not_processed_folder)
-    _initialize_folder(video_folder)
-    _initialize_folder(audio_folder)
-
-    print("Folders initialized successfully")
-
-def store_video(video_file):
-    # Save video to local storage
-    filename = secure_filename(video_file.filename)
-    video_path = os.path.join(not_processed_folder, filename)
-    video_file.save(video_path)
+def store_file(filename: str, file_content: bytes, folder: str, content_type: str, process_uid: str) -> str:
+    # Save file to local storage
+    file_path = os.path.join(folder, filename)
+    with open(file_path, 'wb') as f:
+        f.write(file_content)
     
     # Store metadata in MongoDB using FileMetadataModel
-    result = store_file_metadata(db, video_path, video_file.content_type)
-    return str(result.inserted_id)
+    result = store_file_metadata(process_uid, file_path, content_type)
+    return str(result)
 
 
 
 # Common
 
-def store_file_metadata(db, file_path, content_type):
-    file_metadata = FileMetadataModel(file_path, content_type)
-    result = db.files.insert_one(file_metadata.to_dict())
-    return result
+def modify_file_metadata(file_id, new_metadata):
+    file_metadata = db.files.find_one({"_id": ObjectId(file_id)})
+    if not file_metadata:
+        print("File not found")
+        return False
+    
+    db.files.update_one({"_id": ObjectId(file_id)}, {"$set": new_metadata })
 
-def get_file(video_id):
-    file_metadata = db.files.find_one({"_id": ObjectId(video_id)})
+def store_file_metadata(process_uid: str, file_path: str, content_type: str) -> str:
+    file_metadata = FileMetadataModel(process_uid, file_path, content_type)
+    result = db.files.insert_one(file_metadata.to_dict())
+    return str(result.inserted_id)
+
+def get_file(file_id):
+    file_metadata = db.files.find_one({"_id": ObjectId(file_id)})
     if not file_metadata:
         print("File not found")
         return None
