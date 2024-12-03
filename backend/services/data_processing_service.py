@@ -1,4 +1,4 @@
-import moviepy.editor as mp
+import moviepy as mp
 
 def separate_video_audio(video_file, video_folder, audio_folder):
     """Separate the audio and video streams from the uploaded video file."""

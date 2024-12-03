@@ -15,6 +15,10 @@ def store_file(filename: str, file_content: bytes, folder: str, content_type: st
     return str(result)
 
 
+def Fuck():
+
+    pass
+
 
 # Common
 
