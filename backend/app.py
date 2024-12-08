@@ -1,12 +1,60 @@
 import uuid
 from werkzeug.utils import secure_filename
 from flask import Flask, request, jsonify
+from flask_socketio import SocketIO
+import eventlet
+import eventlet.wsgi
 from config import not_processed_folder, video_folder, audio_folder, initialize_storage
 from api_gateway.config import API_VERSION
 from database.storage import store_file, get_file, delete_file, store_file_metadata
 from services.data_processing_service import separate_video_audio, process_video, process_audio
 
+
 app = Flask(__name__)
+socketio = SocketIO(app)
+
+
+
+# Web socket manager
+
+@socketio.on('connect')
+def handle_connect():
+    print('Client connected')
+
+@socketio.on('disconnect')
+def handle_disconnect():
+    print('Client disconnected')
+
+@socketio.on('message')
+def handle_message(data):
+    print(f"Received message: {data}")
+    socketio.emit('response', f"Server says: {data}")
+    
+
+# @socketio.on('request_audio')
+# def send_audio():
+    # Open audio file
+    # with wave.open('example.wav', 'rb') as audio_file:
+    #     chunk_size = 1024  # Bytes per chunk
+    #     while True:
+    #         data = audio_file.readframes(chunk_size)
+    #         if not data:
+    #             break
+    #         socketio.emit('audio_chunk', data)
+    #         time.sleep(0.1)  # Small delay to simulate streaming
+
+
+
+
+# Replication routes
+
+@app.route(f"/{API_VERSION}/replication/conversation_input", methods=["POST"])
+def conversation_input_route():
+    print("conversation_input")
+    data = request.json
+    socketio.emit('conversation_input', data)
+    return jsonify({"message": "Conversation input sent successfully"}), 200
+
 
 
 
@@ -97,10 +145,16 @@ def test_route():
     print("test")
     return jsonify({"message": "Test route is working"}), 200
 
+@app.route(f"/{API_VERSION}/replication/test_socket", methods=["GET"])
+def test_socket_route():
+    print("test_socket")
+    socketio.emit('test', "Test socket message")
+    return jsonify({"message": "Test socket route is working"}), 200
+
 
 
 # Run
  
 if __name__ == "__main__":
     initialize_storage()
-    app.run(host='0.0.0.0', port=5000)
+    socketio.run(app, host="0.0.0.0", port=5000)

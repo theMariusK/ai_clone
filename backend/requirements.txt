@@ -1,4 +1,6 @@
 Flask
+flask-socketio
+eventlet
 requests
 mongoengine
 moviepy
