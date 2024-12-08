@@ -4,8 +4,7 @@ from flask import Flask, request, jsonify
 from flask_socketio import SocketIO
 import eventlet
 import eventlet.wsgi
-from config import not_processed_folder, video_folder, audio_folder, initialize_storage
-from api_gateway.config import API_VERSION
+from config import not_processed_folder, video_folder, audio_folder, initialize_storage, API_VERSION
 from database.storage import store_file, get_file, delete_file, store_file_metadata
 from services.data_processing_service import separate_video_audio, process_video, process_audio
 
@@ -48,12 +47,7 @@ def handle_message(data):
 
 # Replication routes
 
-@app.route(f"/{API_VERSION}/replication/conversation_input", methods=["POST"])
-def conversation_input_route():
-    print("conversation_input")
-    data = request.json
-    socketio.emit('conversation_input', data)
-    return jsonify({"message": "Conversation input sent successfully"}), 200
+
 
 
 

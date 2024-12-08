@@ -4,6 +4,9 @@ not_processed_folder = os.getenv("NOT_PROCESSED_FOLDER")
 video_folder = os.getenv("VIDEO_FOLDER")
 audio_folder = os.getenv("AUDIO_FOLDER")
 
+API_VERSION = "v1"
+LANGUAGE_MODEL_URL = "http://localhost:5000"
+
 def _initialize_folder(path):
     if not os.path.exists(path):
         os.makedirs(path)

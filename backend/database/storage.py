@@ -15,11 +15,6 @@ def store_file(filename: str, file_content: bytes, folder: str, content_type: st
     return str(result)
 
 
-def Fuck():
-
-    pass
-
-
 # Common
 
 def modify_file_metadata(file_id, new_metadata):
