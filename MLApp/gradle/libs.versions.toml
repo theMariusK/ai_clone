@@ -1,6 +1,7 @@
 [versions]
 agp = "8.7.2"
 cameraCore = "1.4.0"
+cameraVideo = "1.5.0"
 faceDetection = "17.0.4"
 faceDetectionVersion = "16.1.5"
 junit = "4.13.2"
@@ -11,13 +12,17 @@ lifecycleExtensions = "2.2.0"
 material = "1.10.0"
 activity = "1.9.3"
 constraintlayout = "2.2.0"
+okhttp = "4.10.0"
 visionCommon = "17.3.0"
 playServicesMlkitFaceDetection = "17.1.0"
+navigationFragment = "2.6.0"
+navigationUi = "2.6.0"
 
 [libraries]
 camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cameraCore" }
 camera-core = { module = "androidx.camera:camera-core", version.ref = "cameraCore" }
 camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "cameraCore" }
+camera-video = { module = "androidx.camera:camera-video", version = "1.4.0" }
 camera-view = { module = "androidx.camera:camera-view", version.ref = "cameraCore" }
 face-detection = { module = "com.google.mlkit:face-detection", version.ref = "faceDetection" }
 face-detection-v1615 = { module = "com.google.mlkit:face-detection", version.ref = "faceDetectionVersion" }
@@ -29,8 +34,11 @@ lifecycle-extensions = { module = "androidx.lifecycle:lifecycle-extensions", ver
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 vision-common = { group = "com.google.mlkit", name = "vision-common", version.ref = "visionCommon" }
 play-services-mlkit-face-detection = { group = "com.google.android.gms", name = "play-services-mlkit-face-detection", version.ref = "playServicesMlkitFaceDetection" }
+navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version.ref = "navigationFragment" }
+navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version.ref = "navigationUi" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
