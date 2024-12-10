@@ -71,9 +71,9 @@ def process_audio(audio_file_path):
     mel_spectrogram = librosa.power_to_db(mel_spectrogram, ref=np.max).tolist()
 
     audio_features = {
-        "sample_rate": sr,
+        "sample_rate": float(sr),
         "time_domain_features": {
-            "energy": energy,
+            "energy": float(energy),
             "zero_crossing_rate": zcr,
             "rms": rms
         },
