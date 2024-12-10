@@ -89,7 +89,7 @@ def process_video_route():
     delete_file(non_processed_result)
     
     # Process the video and audio
-    video_processed_result = process_video(video)
+    video_processed_result = process_video(video, audio)
     if 'error' in video_processed_result:
         return jsonify({"message": f"Error processing video, {video_processed_result.get('error')}"}), 500
     audio_processed_result = process_audio(audio)
