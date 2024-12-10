@@ -31,11 +31,11 @@ def separate_video_audio(video_file, video_folder, audio_folder):
 
     return video_output, audio_output
 
-def process_video(video_file_path):
+def process_video(video_file_path, audio_file_path):
     """Process the uploaded video file."""
     print("Processing video")
     
-    video_processing_results = analyze_video(video_file_path)
+    video_processing_results = analyze_video(video_file_path, audio_file_path)
     
     return video_processing_results
 
@@ -213,7 +213,7 @@ def generate_mel_spectrogram(wav_file, n_mels=80, hop_length=256, win_length=102
 
 # Video
 
-def analyze_video(video_file_path: str) -> Dict[str, Any]:
+def analyze_video(video_file_path: str, audio_file_path) -> Dict[str, Any]:
     # Check if uploaded file is a video format
     if not video_file_path.endswith(('.mp4', '.m4v', '.mpeg', '.mov')):
         return {"error": "Invalid video format. Please upload an MP4 or a compatible video file."}
@@ -226,10 +226,11 @@ def analyze_video(video_file_path: str) -> Dict[str, Any]:
 
     try:
         # Extract audio from the video using ffmpeg
-        tmp_audio_path = tempfile.NamedTemporaryFile(delete=False, suffix=".wav").name
-        # Using ffmpeg to extract audio: ensure ffmpeg is installed in the system
-        subprocess.run(["ffmpeg", "-y", "-i", tmp_video_path, "-vn", "-ac", "1", "-ar", "16000", "-f", "wav", tmp_audio_path], check=True)
+        # tmp_audio_path = tempfile.NamedTemporaryFile(delete=False, suffix=".wav").name
+        # # Using ffmpeg to extract audio: ensure ffmpeg is installed in the system
+        # subprocess.run(["ffmpeg", "-y", "-i", tmp_video_path, "-vn", "-ac", "1", "-ar", "16000", "-f", "wav", tmp_audio_path], check=True)
 
+        tmp_audio_path = audio_file_path
         # Load video with OpenCV
         cap = cv2.VideoCapture(tmp_video_path)
         if not cap.isOpened():
