@@ -40,24 +40,64 @@ def process_video(video_file_path):
     return video_processing_results
 
 def process_audio(audio_file_path):
-    # Preprocess audio
-    # with open(audio_file_path, 'rb') as audio_file:
-    #     audio_data = audio_file.read()
-    prep_audio_wav = preprocess_audio(audio_file_path)
+    # Load audio file
+    y, sr = librosa.load(audio_file_path, sr=None)
     
-    # Extract mel spectogram from speech audio
-    mel_spectogram = generate_mel_spectrogram(prep_audio_wav)
-    mel_spectogram = mel_spectogram.tolist()
+    # Time-Domain Features
+    energy = np.sum(y**2)
+    zcr = librosa.feature.zero_crossing_rate(y)[0].tolist()
+    rms = librosa.feature.rms(y=y)[0].tolist()
+
+    # Frequency-Domain Features
+    spectral_centroid = librosa.feature.spectral_centroid(y=y, sr=sr)[0].tolist()
+    spectral_bandwidth = librosa.feature.spectral_bandwidth(y=y, sr=sr)[0].tolist()
+    spectral_contrast = librosa.feature.spectral_contrast(y=y, sr=sr).tolist()
+    spectral_rolloff = librosa.feature.spectral_rolloff(y=y, sr=sr)[0].tolist()
+
+    # MFCCs
+    mfccs = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13).tolist()
+
+    # Pitch (Fundamental Frequency)
+    f0, voiced_flag, voiced_prob = librosa.pyin(y, fmin=50, fmax=500)
+    f0 = f0.tolist() if f0 is not None else None
+    voiced_flag = voiced_flag.tolist()
+    voiced_prob = voiced_prob.tolist()
+
+    # Chroma Features
+    chroma_stft = librosa.feature.chroma_stft(y=y, sr=sr).tolist()
+
+    # Mel Spectrogram
+    mel_spectrogram = librosa.feature.melspectrogram(y=y, sr=sr, n_fft=2048, hop_length=512, n_mels=128)
+    mel_spectrogram = librosa.power_to_db(mel_spectrogram, ref=np.max).tolist()
+
+    audio_features = {
+        "sample_rate": sr,
+        "time_domain_features": {
+            "energy": energy,
+            "zero_crossing_rate": zcr,
+            "rms": rms
+        },
+        "frequency_domain_features": {
+            "spectral_centroid": spectral_centroid,
+            "spectral_bandwidth": spectral_bandwidth,
+            "spectral_contrast": spectral_contrast,
+            "spectral_rolloff": spectral_rolloff
+        },
+        "mfccs": mfccs,
+        "pitch": {
+            "f0": f0,
+            "voiced_flag": voiced_flag,
+            "voiced_prob": voiced_prob
+        },
+        "chroma_features": chroma_stft,
+        "mel_spectrogram": mel_spectrogram
+    }
     
-    # Save mel spectogram
-    # TODO: save me spectogram in databse together with username associated to the speech audio. 
-    # Username should be obtained somehow in the request of Flask
-    return mel_spectogram
+    return audio_features
 
 
 
 # Audio
-
 def preprocess_audio(mp3_file, target_dbfs=-20.0, top_db=20, target_sample_rate=22050, target_channels=1):
     """
     Preprocess an MP3 file: convert to WAV, remove silence, and normalize volume.
