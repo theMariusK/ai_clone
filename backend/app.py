@@ -6,9 +6,9 @@ import requests
 import eventlet
 import eventlet.wsgi
 from config import not_processed_folder, video_folder, audio_folder, initialize_storage, API_VERSION
-from database.storage import store_file, get_file, delete_file, store_file_metadata
-from internal_services.data_processing_service import separate_video_audio, process_video, process_audio
-from internal_services.replication_service import conversation_input
+from database.storage import store_file, get_file, delete_file, store_file_metadata, store_audio_processing_metadata, store_video_processing_metadata
+from internal_modules.data_processing_module import separate_video_audio, process_video, process_audio
+from internal_modules.replication_module import conversation_input
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -31,24 +31,10 @@ def handle_message(data):
     socketio.emit('response', f"Server says: {data}")
     
 
-# @socketio.on('request_audio')
-# def send_audio():
-    # Open audio file
-    # with wave.open('example.wav', 'rb') as audio_file:
-    #     chunk_size = 1024  # Bytes per chunk
-    #     while True:
-    #         data = audio_file.readframes(chunk_size)
-    #         if not data:
-    #             break
-    #         socketio.emit('audio_chunk', data)
-    #         time.sleep(0.1)  # Small delay to simulate streaming
-
-
-
 
 # Replication routes
 
-@app.route(f"/{API_VERSION}/replication/conversation-input", methods=['POST'])
+@app.route(f"/{API_VERSION}/conversation-input", methods=['POST'])
 def conversation_input_route():
     print(request.json)
     
@@ -60,7 +46,6 @@ def conversation_input_route():
     socketio.emit('conversation_input', assistant_output)
     
     return jsonify({"message": "Replication service called successfully"}), 200
-
 
 
 
@@ -101,38 +86,23 @@ def process_video_route():
         return jsonify({"message": "Error storing video and audio metadata"}), 500
         
     # Delete the non-processed file
-    delete_file(non_processed_result);
+    delete_file(non_processed_result)
     
     # Process the video and audio
     video_processed_result = process_video(video)
+    if 'error' in video_processed_result:
+        return jsonify({"message": f"Error processing video, {video_processed_result.get('error')}"}), 500
     audio_processed_result = process_audio(audio)
     
     # Store the results of processing
-    # Fill the code here
+    store_video_processing_metadata(process_uid, video_processed_result)
+    store_audio_processing_metadata(process_uid, audio_processed_result)
     
     # Delete the video and audio files
     delete_file(video_result)
     delete_file(audio_result)
 
     return jsonify({"message": "Video processed and stored successfully", "process_uid": str(process_uid)})
-
-@app.route(f"/{API_VERSION}/video", methods=['POST'])
-def upload_video_route():
-    print("upload_video")
-    
-    video_file = request.files['file']
-    
-    result = store_file(video_file)
-
-    return jsonify({"message": "Video uploaded successfully", "video_id": str(result)})
-
-@app.route(f"/{API_VERSION}/video/<video_id>", methods=['GET'])
-def get_video_route(video_id):
-    video_data = get_file(video_id)
-    if video_data:
-        return jsonify({"video_id": video_id, "video_data": video_data}), 200
-    else:
-        return jsonify({"message": "Video not found"}), 404
 
 
 

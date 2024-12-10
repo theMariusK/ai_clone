@@ -1,8 +1,14 @@
 Flask
 flask-socketio
-eventlet
 requests
+eventlet
 mongoengine
+
 moviepy
 librosa
 pydub
+
+opencv-python
+openai-whisper
+tf-keras
+deepface
