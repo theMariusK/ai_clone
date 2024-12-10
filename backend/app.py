@@ -2,12 +2,13 @@ import uuid
 from werkzeug.utils import secure_filename
 from flask import Flask, request, jsonify
 from flask_socketio import SocketIO
+import requests
 import eventlet
 import eventlet.wsgi
 from config import not_processed_folder, video_folder, audio_folder, initialize_storage, API_VERSION
 from database.storage import store_file, get_file, delete_file, store_file_metadata
-from services.data_processing_service import separate_video_audio, process_video, process_audio
-
+from internal_services.data_processing_service import separate_video_audio, process_video, process_audio
+from internal_services.replication_service import conversation_input
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -47,7 +48,18 @@ def handle_message(data):
 
 # Replication routes
 
-
+@app.route(f"/{API_VERSION}/replication/conversation-input", methods=['POST'])
+def conversation_input_route():
+    print(request.json)
+    
+    assistant_output = conversation_input(request.json.get("value"))
+    if assistant_output is None:
+        return jsonify({"message": "Error sending data to language model"}), 500
+    print(assistant_output)
+    
+    socketio.emit('conversation_input', assistant_output)
+    
+    return jsonify({"message": "Replication service called successfully"}), 200
 
 
 

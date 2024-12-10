@@ -5,7 +5,9 @@ video_folder = os.getenv("VIDEO_FOLDER")
 audio_folder = os.getenv("AUDIO_FOLDER")
 
 API_VERSION = "v1"
-LANGUAGE_MODEL_URL = "http://localhost:5000"
+
+LANGUAGE_MODEL_ENDPOINT = "http://host.docker.internal:5001"
+
 
 def _initialize_folder(path):
     if not os.path.exists(path):
