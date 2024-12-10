@@ -8,6 +8,8 @@ from audio_device import get_output_device
 # Create a Socket.IO client
 sio = socketio.Client()
 device_name = ""
+server_ip = "localhost"
+server_port = "5000"
 
 @sio.event
 def connect():
@@ -32,7 +34,7 @@ def disconnect():
 def main():
     # Connect to the WebSocket server
     try:
-        sio.connect('http://localhost:5000')
+        sio.connect(f"http://{server_ip}:{server_port}")
         sio.wait()  # Keep the client running
     except Exception as e:
         print(f"Error connecting to the server: {e}")
@@ -93,6 +95,9 @@ if __name__ == "__main__":
     
     config = load_config(CONFIG_FILE)
     output_device_name = config.get("output_device_name", "Default Device")
+    server_config = config.get("server", {})
+    server_ip = server_config.get("host", "localhost")
+    server_port = server_config.get("port", "5000")
     device_name = output_device_name
     print(f"Output device name: {output_device_name}")  
 

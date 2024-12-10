@@ -18,12 +18,9 @@ def store_file(filename: str, file_content: bytes, folder: str, content_type: st
 # Audio results
 
 # Function to store audio processing metadata without file_path and content_type
-def store_audio_processing_metadata(process_uid: str, spectogram: dict) -> str:
+def store_audio_processing_metadata(process_uid: str, processing_details) -> str:
     # Creating metadata for the audio processing without file_path and content_type
-    audio_metadata = AudioProcessingMetadataModel(
-        process_uid=process_uid,
-        spectogram=spectogram  # Details like audio format, processing steps, etc.
-    )
+    audio_metadata = AudioProcessingMetadataModel(process_uid, processing_details)
     result = db.audio_processing_metadata.insert_one(audio_metadata.to_dict())  # Storing audio processing metadata
     return str(result.inserted_id)
 

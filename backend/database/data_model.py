@@ -12,14 +12,14 @@ class FileMetadataModel:
         }
     
 class AudioProcessingMetadataModel:
-    def __init__(self, process_uid, spectogram):
+    def __init__(self, process_uid, processing_details):
         self.process_uid = process_uid
-        self.spectogram = spectogram
+        self.processing_details = processing_details
     
     def to_dict(self):
         return {
             "process_uid": self.process_uid,
-            "spectogram": self.spectogram
+            "processing_details": self.processing_details
         }
 
 class VideoProcessingMetadataModel:
