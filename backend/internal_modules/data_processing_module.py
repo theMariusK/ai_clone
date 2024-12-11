@@ -28,7 +28,7 @@ def separate_video_audio(video_file, video_folder, audio_folder):
 
     video.write_videofile(video_output, audio=False)
     audio.write_audiofile(audio_output)
-
+    
     return video_output, audio_output
 
 def process_video(video_file_path, audio_file_path):
@@ -219,10 +219,10 @@ def analyze_video(video_file_path: str, audio_file_path) -> Dict[str, Any]:
         return {"error": "Invalid video format. Please upload an MP4 or a compatible video file."}
 
     # Save the uploaded video to a temporary file
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".mp4") as tmp_video:
-        with open(video_file_path, "rb") as file:
-            tmp_video.write(file.read())
-            tmp_video_path = tmp_video.name
+    # with tempfile.NamedTemporaryFile(delete=False, suffix=".mp4") as tmp_video:
+    #     with open(video_file_path, "rb") as file:
+    #         tmp_video.write(file.read())
+    #         tmp_video_path = tmp_video.name
 
     try:
         # Extract audio from the video using ffmpeg
@@ -230,9 +230,9 @@ def analyze_video(video_file_path: str, audio_file_path) -> Dict[str, Any]:
         # # Using ffmpeg to extract audio: ensure ffmpeg is installed in the system
         # subprocess.run(["ffmpeg", "-y", "-i", tmp_video_path, "-vn", "-ac", "1", "-ar", "16000", "-f", "wav", tmp_audio_path], check=True)
 
-        tmp_audio_path = audio_file_path
+        # tmp_audio_path = audio_file_path
         # Load video with OpenCV
-        cap = cv2.VideoCapture(tmp_video_path)
+        cap = cv2.VideoCapture(video_file_path)
         if not cap.isOpened():
             raise ValueError("Failed to open the video file.")
 
@@ -283,7 +283,7 @@ def analyze_video(video_file_path: str, audio_file_path) -> Dict[str, Any]:
         # Now run speech-to-text using whisper
         # Load a whisper model (you can choose "tiny", "base", "small", "medium", "large")
         model = whisper.load_model("base")
-        transcription = model.transcribe(tmp_audio_path)
+        transcription = model.transcribe(audio_file_path)
 
         # Whisper returns segments with start/end times in seconds
         text_segments = []
@@ -295,10 +295,10 @@ def analyze_video(video_file_path: str, audio_file_path) -> Dict[str, Any]:
             })
 
         # Cleanup temp files
-        if os.path.exists(tmp_video_path):
-            os.remove(tmp_video_path)
-        if os.path.exists(tmp_audio_path):
-            os.remove(tmp_audio_path)
+        # if os.path.exists(tmp_video_path):
+        #     os.remove(tmp_video_path)
+        # if os.path.exists(tmp_audio_path):
+        #     os.remove(tmp_audio_path)
 
         output = {
             "video_duration": duration,
@@ -307,17 +307,17 @@ def analyze_video(video_file_path: str, audio_file_path) -> Dict[str, Any]:
         }
 
         # Save the output to a .json file
-        with open('output.json', 'w') as json_file:
-            json.dump(output, json_file)
+        # with open('output.json', 'w') as json_file:
+        #     json.dump(output, json_file)
 
         return output
     
     except Exception as e:
         # Cleanup temp files in case of error
-        if os.path.exists(tmp_video_path):
-            os.remove(tmp_video_path)
-        # Audio might not exist if ffmpeg failed early
-        if 'tmp_audio_path' in locals() and os.path.exists(tmp_audio_path):
-            os.remove(tmp_audio_path)
+        # if os.path.exists(video_file_path):
+        #     # os.remove(video_file_path)
+        # # Audio might not exist if ffmpeg failed early
+        # if 'audio_file_path' in locals() and os.path.exists(audio_file_path):
+            # os.remove(audio_file_path)
 
         return {"error": f"Video analysis failed: {str(e)}"}
