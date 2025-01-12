@@ -93,6 +93,11 @@ def process_audio(audio_file_path):
         "mel_spectrogram": mel_spectrogram
     }
     
+    # with open('output_audio.json', 'w') as json_file:
+    #         json.dump(audio_features, json_file)
+            
+    # json_string = json.dumps(audio_features, indent=4)
+    
     return audio_features
 
 
@@ -307,8 +312,8 @@ def analyze_video(video_file_path: str, audio_file_path) -> Dict[str, Any]:
         }
 
         # Save the output to a .json file
-        # with open('output.json', 'w') as json_file:
-        #     json.dump(output, json_file)
+        with open('output.json', 'w') as json_file:
+            json.dump(output, json_file)
 
         return output
     
